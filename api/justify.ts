@@ -1,17 +1,19 @@
 import { Express, Request, Response } from "express";
 import { authenticateToken, AuthenticatedRequest, Auth } from "../services/jwt";
-import { CanIJustifyThis } from "../services/words.controler";
+import { CanIJustifyThis, justifyText } from "../services/words.controler";
 
 const profileRoutes = (app: Express) => {
   app.post("/api/justify", authenticateToken,  async (req: AuthenticatedRequest, res: Response) => {
     const requestBody = req.body;
     const info = req.info as Auth
 
-    if (CanIJustifyThis(requestBody, info.words) != true) {
+    if (CanIJustifyThis(requestBody, info.words) < 0) {
         res.status(402).json({ msg: "Payment Required"})
     } else {
-        console.log('Request Body:', requestBody, "info", req.info);
-        res.status(200).json({ msg: "OK words : " + info.words })
+        const justifiedText = justifyText(requestBody, 80)
+        // res.status(200).({ msg: justifiedText })
+        // console.log(justifiedText)
+        res.end(justifiedText)
     }
   });
 
