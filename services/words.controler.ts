@@ -1,7 +1,11 @@
+import { loginRepository } from "../queries/login.repository";
 
-export function CanIJustifyThis(input:string, wordAvailableToday: number): number {
+export async function CanIJustifyThis(input:string, username: string): Promise<number> {
+    const user = await loginRepository.getUser(username)
     const tab = input.split(" ")
-    if (tab.length > wordAvailableToday) 
+    const resp = await loginRepository.updateUserLogin(username, tab.length)
+
+    if (tab.length > user.words || resp != true) 
         return -1
     return tab.length
 }

@@ -39,7 +39,7 @@ export async function accountCreationCheck(user: LoginInfos): Promise<boolean> {
 }
 
 export async function loginCheck(user: LoginInfos) {
-    const truthUser = await loginRepository.getUser(user.login) 
+    const truthUser = await loginRepository.getUser(user.login)
     if (truthUser !== undefined && (await bcrypt.compare(user.password, truthUser.password)) && process.env.KEY) {
         const token = jwt.sign({ login: user.login, words: truthUser.words }, process.env.KEY, { expiresIn: '24h' });
         return token
