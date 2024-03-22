@@ -3,8 +3,9 @@ import { Request, Response, NextFunction } from 'express';
 import dotenv from "dotenv";
 dotenv.config();
 
-type Auth = {
+export type Auth = {
     login: string;
+    words: number
     iat: number;
     exp: number
 }

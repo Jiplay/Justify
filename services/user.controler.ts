@@ -32,7 +32,7 @@ export async function accountCreationCheck(user: LoginInfos): Promise<boolean> {
         const resp = await loginRepository.findUser(user.login) 
         if (resp !== true) {
             const hashedPassword = await bcrypt.hash(user.password, 10);
-            return await loginRepository.saveUser({ login: user.login, password: hashedPassword });
+            return await loginRepository.saveUser({ login: user.login, password: hashedPassword, words: user.words });
         }
     }
     return false;
@@ -41,7 +41,7 @@ export async function accountCreationCheck(user: LoginInfos): Promise<boolean> {
 export async function loginCheck(user: LoginInfos) {
     const truthUser = await loginRepository.getUser(user.login) 
     if (truthUser !== undefined && (await bcrypt.compare(user.password, truthUser.password)) && process.env.KEY) {
-        const token = jwt.sign({ login: user.login }, process.env.KEY, { expiresIn: '24h' });
+        const token = jwt.sign({ login: user.login, words: truthUser.words }, process.env.KEY, { expiresIn: '24h' });
         return token
     }
     return "KO"
